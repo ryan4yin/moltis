@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>moltis</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+
+<!-- Top bar -->
+<header class="flex items-center gap-3 px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] shrink-0">
+  <h1 class="text-base font-medium tracking-wide text-[var(--text-strong)]">moltis</h1>
+  <span class="status-dot" id="statusDot"></span>
+  <span class="text-xs text-[var(--muted)]" id="statusText">disconnected</span>
+  <div class="flex-1"></div>
+
+  <!-- Theme toggle -->
+  <div class="theme-toggle" id="themeToggle">
+    <button class="theme-btn" data-theme-val="light" title="Light theme">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
+    <button class="theme-btn" data-theme-val="system" title="System theme">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+    </button>
+    <button class="theme-btn" data-theme-val="dark" title="Dark theme">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75 9.75 9.75 0 0 1 8.25 6c0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25 9.75 9.75 0 0 0 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>
+    </button>
+  </div>
+
+  <button class="text-xs text-[var(--muted)] border border-[var(--border)] px-2.5 py-1 rounded-md hover:text-[var(--text)] hover:border-[var(--border-strong)] transition-colors cursor-pointer bg-transparent font-[var(--font-body)]" id="methodsToggle">Methods</button>
+</header>
+
+<!-- Main layout -->
+<div class="flex flex-1 overflow-hidden">
+  <!-- Chat column -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <!-- Messages area -->
+    <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-2" id="messages"></div>
+
+    <!-- Input area -->
+    <div class="px-4 py-3 border-t border-[var(--border)] bg-[var(--surface)] flex gap-2 items-end">
+      <textarea
+        id="chatInput"
+        placeholder="Type a message..."
+        rows="1"
+        class="flex-1 bg-[var(--surface2)] border border-[var(--border)] text-[var(--text)] px-3 py-2 rounded-lg text-sm resize-none min-h-[40px] max-h-[120px] leading-relaxed focus:outline-none focus:border-[var(--border-strong)] focus:ring-1 focus:ring-[var(--accent-subtle)] transition-colors font-[var(--font-body)]"
+      ></textarea>
+      <button
+        id="sendBtn"
+        disabled
+        class="bg-[var(--accent-dim)] text-white border-none px-4 py-2 rounded-lg cursor-pointer text-sm font-medium whitespace-nowrap hover:bg-[var(--accent)] disabled:opacity-40 disabled:cursor-default transition-colors"
+      >Send</button>
+    </div>
+  </div>
+
+  <!-- Methods panel -->
+  <div class="w-[420px] border-l border-[var(--border)] flex flex-col bg-[var(--surface)] shrink-0 hidden" id="methodsPanel">
+    <div class="px-3 py-2.5 border-b border-[var(--border)] text-sm text-[var(--muted)] font-medium">Method Explorer</div>
+    <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-3">
+      <div>
+        <label class="text-xs text-[var(--muted)] block mb-1">Method</label>
+        <input id="rpcMethod" placeholder="e.g. health" value="health" class="w-full bg-[var(--surface2)] border border-[var(--border)] text-[var(--text)] px-2 py-1.5 rounded text-xs font-[var(--font-mono)] focus:outline-none focus:border-[var(--border-strong)]">
+      </div>
+      <div>
+        <label class="text-xs text-[var(--muted)] block mb-1">Params (JSON, optional)</label>
+        <textarea id="rpcParams" placeholder="{}" class="w-full bg-[var(--surface2)] border border-[var(--border)] text-[var(--text)] px-2 py-1.5 rounded text-xs font-[var(--font-mono)] min-h-[80px] resize-y focus:outline-none focus:border-[var(--border-strong)]"></textarea>
+      </div>
+      <button id="rpcSend" class="bg-[var(--accent-dim)] text-white border-none px-3 py-1.5 rounded text-xs cursor-pointer hover:bg-[var(--accent)] transition-colors self-start">Call</button>
+      <div>
+        <label class="text-xs text-[var(--muted)] block mb-1">Response</label>
+        <div class="methods-result" id="rpcResult"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/app.js"></script>
+</body>
+</html>

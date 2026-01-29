@@ -3,10 +3,12 @@ use std::sync::Arc;
 
 use axum::{
     extract::{ConnectInfo, State, WebSocketUpgrade},
-    response::{Html, IntoResponse, Json},
+    response::{IntoResponse, Json},
     routing::get,
     Router,
 };
+#[cfg(feature = "web-ui")]
+use axum::response::Html;
 use tower_http::cors::{Any, CorsLayer};
 use tracing::info;
 
@@ -47,12 +49,17 @@ pub fn build_gateway_app(
         .allow_methods(Any)
         .allow_headers(Any);
 
-    Router::new()
+    let router = Router::new()
         .route("/health", get(health_handler))
-        .route("/ws", get(ws_upgrade_handler))
+        .route("/ws", get(ws_upgrade_handler));
+
+    #[cfg(feature = "web-ui")]
+    let router = router
         .route("/", get(root_handler))
-        .layer(cors)
-        .with_state(app_state)
+        .route("/assets/style.css", get(css_handler))
+        .route("/assets/app.js", get(js_handler));
+
+    router.layer(cors).with_state(app_state)
 }
 
 /// Start the gateway HTTP + WebSocket server.
@@ -62,8 +69,11 @@ pub async fn start_gateway(bind: &str, port: u16) -> anyhow::Result<()> {
     let password = std::env::var("MOLTIS_PASSWORD").ok();
     let resolved_auth = auth::resolve_auth(token, password);
 
-    // Discover LLM providers from env.
-    let registry = Arc::new(ProviderRegistry::from_env());
+    // Load config file (moltis.toml / .yaml / .json) if present.
+    let config = moltis_config::discover_and_load();
+
+    // Discover LLM providers from env + config.
+    let registry = Arc::new(ProviderRegistry::from_env_with_config(&config.providers));
     let provider_summary = registry.provider_summary();
 
     let mut services = GatewayServices::noop();
@@ -149,6 +159,23 @@ async fn ws_upgrade_handler(
     })
 }
 
+#[cfg(feature = "web-ui")]
 async fn root_handler() -> impl IntoResponse {
-    Html(include_str!("chat_ui.html"))
+    Html(include_str!("assets/index.html"))
+}
+
+#[cfg(feature = "web-ui")]
+async fn css_handler() -> impl IntoResponse {
+    (
+        [("content-type", "text/css; charset=utf-8")],
+        include_str!("assets/style.css"),
+    )
+}
+
+#[cfg(feature = "web-ui")]
+async fn js_handler() -> impl IntoResponse {
+    (
+        [("content-type", "application/javascript; charset=utf-8")],
+        include_str!("assets/app.js"),
+    )
 }

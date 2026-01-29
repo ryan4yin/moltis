@@ -37,6 +37,7 @@ async fn start_test_server() -> SocketAddr {
     addr
 }
 
+#[cfg(feature = "web-ui")]
 #[tokio::test]
 async fn root_serves_chat_ui_html() {
     let addr = start_test_server().await;

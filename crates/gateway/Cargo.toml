@@ -30,6 +30,10 @@ async-trait = "0.1"
 tokio-stream = { workspace = true }
 reqwest = { workspace = true }
 
+[features]
+default = ["web-ui"]
+web-ui = []
+
 [dev-dependencies]
 tokio-tungstenite = { workspace = true }
 reqwest = { workspace = true }
