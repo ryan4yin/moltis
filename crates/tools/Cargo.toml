@@ -22,3 +22,6 @@ uuid          = { workspace = true }
 
 [dev-dependencies]
 tokio = { features = ["macros", "rt-multi-thread"], workspace = true }
+
+[lints]
+workspace = true

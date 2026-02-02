@@ -25,6 +25,9 @@ members = [
 ]
 resolver = "2"
 
+[workspace.lints.rust]
+unsafe_code = "deny"
+
 [workspace.package]
 edition = "2024"
 license = "MIT"

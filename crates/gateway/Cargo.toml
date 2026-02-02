@@ -70,3 +70,6 @@ reqwest           = { workspace = true }
 sqlx              = { workspace = true }
 tempfile          = "3"
 tokio-tungstenite = { workspace = true }
+
+[lints]
+workspace = true

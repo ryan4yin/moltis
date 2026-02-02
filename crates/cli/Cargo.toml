@@ -49,3 +49,6 @@ tracing-subscriber = { workspace = true }
 [features]
 default = ["tls"]
 tls     = ["moltis-gateway/tls"]
+
+[lints]
+workspace = true

@@ -39,3 +39,6 @@ moltis-oauth = { optional = true, workspace = true }
 axum     = { workspace = true }
 http     = "1"
 tempfile = "3"
+
+[lints]
+workspace = true

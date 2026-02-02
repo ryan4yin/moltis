@@ -280,17 +280,9 @@ impl ProviderRegistry {
             }
 
             // Use config api_key or fall back to env var.
-            let resolved_key = resolve_api_key(config, provider_name, env_key);
-
-            if resolved_key.is_none() {
+            let Some(resolved_key) = resolve_api_key(config, provider_name, env_key) else {
                 continue;
-            }
-
-            // If config provides an api_key, set the env var so genai picks it up.
-            if let Some(ref key) = resolved_key {
-                // Safety: only called during single-threaded startup.
-                unsafe { std::env::set_var(env_key, key) };
-            }
+            };
 
             let model_id = config
                 .get(provider_name)
@@ -305,6 +297,7 @@ impl ProviderRegistry {
             let provider = Arc::new(genai_provider::GenaiProvider::new(
                 model_id.into(),
                 genai_provider_name.clone(),
+                resolved_key,
             ));
             self.register(
                 ModelInfo {
